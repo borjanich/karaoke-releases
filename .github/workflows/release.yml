@@ -1,0 +1,32 @@
+name: release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish release from latest.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER=$(jq -r .version latest.json)
+          NOTES=$(jq -r '.notes // ""' latest.json)
+          if gh release view "v$VER" >/dev/null 2>&1; then
+            gh release upload "v$VER" karaoke-bar.zip karaoke.exe --clobber
+          else
+            gh release create "v$VER" karaoke-bar.zip karaoke.exe \
+              --title "Karaoke $VER" --notes "${NOTES:-Karaoke $VER}" --target "$GITHUB_SHA" --latest
+          fi
+      - name: Delete older releases (only the newest one is kept)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER=$(jq -r .version latest.json)
+          gh release list --limit 300 --json tagName -q '.[].tagName' | while read -r t; do
+            if [ -n "$t" ] && [ "$t" != "v$VER" ]; then gh release delete "$t" --yes --cleanup-tag || true; fi
+          done

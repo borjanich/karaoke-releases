@@ -1,0 +1,16 @@
+{
+ "version": "0.9.86",
+ "notes": "Settings for preparing songs without a graphics card",
+ "files": [
+  {
+   "name": "karaoke.exe",
+   "sha256": "76958fa15843baa33293753f4bfeeb2eb369c749cc1f9d7affaa2c38a89135c0",
+   "size": 17928192
+  },
+  {
+   "name": "karaoke-bar.zip",
+   "sha256": "29e9cd7290634c78b55efdddf98e2e59edf60f4615733681c0263067abd83bf2",
+   "size": 7476648
+  }
+ ]
+}
